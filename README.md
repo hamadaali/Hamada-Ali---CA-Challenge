@@ -17,17 +17,15 @@ Encapsulates login functionality. Provides methods to:
 These classes connect Gherkin scenarios to executable Java methods, allowing natural-language test steps.
 
 RegisterSteps.java
-Implements test flows for:
+Implements test flows for: Registration
 
 LoginSteps.java
-Implements test flows for:
+Implements test flows for:Login
 
 3. Utilities (Located in src/test/java/utilities)
-DriverManager.java
-Manages the WebDriver lifecycle:
+DriverManager.java manages the WebDriver lifecycle:
 Initializes browser drivers.
 Handles browser setup and teardown.
-Provides singleton WebDriver instance.
 
 4. Hooks (Located in src/test/java/hooks)
 Hooks.java
@@ -36,8 +34,7 @@ Launches and closes the browser per scenario.
 Ensures clean test environments.
 
 5. Configuration Files
-config.properties
-Stores global test settings:
+config.properties stores global test settings:
 Browser type (e.g., Chrome).
 
 testng.xml
@@ -51,5 +48,5 @@ Test grouping or parameterization.
 register.feature & login.feature
 Describe user behavior using Gherkin syntax:
 Scenarios for valid and invalid login/registration.
-Scenario Outlines for data-driven testing.
+Scenario Outlines for Data-Driven Testing.
 Easy traceability for non-technical stakeholders.
