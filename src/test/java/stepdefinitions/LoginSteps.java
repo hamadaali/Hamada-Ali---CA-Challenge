@@ -39,9 +39,5 @@ public class LoginSteps {
     public void iShouldGetAnErrorAlertMessage(String errorMessage) {
         Assert.assertTrue(loginPage.getErrorMessage().contains(errorMessage));
     }
-    @Then("I should get validation error message")
-    public void i_Should_Get_Validation_Error_Message() {
-    }
-
 
 }
