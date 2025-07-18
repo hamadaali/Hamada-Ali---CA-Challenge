@@ -4,7 +4,7 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -16,6 +16,7 @@ public class RegisterPage {
     private final WebDriverWait wait;
     public JavascriptExecutor js;
 
+
     private final By ProfileButton = By.className("purina-profile");
     private final By signUpButton = By.xpath("//button[normalize-space(text())='Create Account']");
     private final By emailAddress = By.id("emailAddress");
@@ -24,15 +25,16 @@ public class RegisterPage {
     private final By lastName = By.id("lastName");
     private final By zipCode = By.id("postalCode");
     private final By dogDropdownButton = By.id("dogCount-trigger");
-    private final By trustPopup = By.className("onetrust-close-btn-handler");
     private final By password = By.id("password");
     private final By confirmPassword = By.id("confirmPassword");
     private final By agreeToTerms = By.id("terms");
     private final By submitButton = By.xpath("//button[normalize-space(text())='Create Account']");
+    private final By VerifyRegistration = By.xpath("/html/body/main/div/div/div/div/div/div/div/h1");
 
     public RegisterPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(25));
+        js = (JavascriptExecutor) driver;
         PageFactory.initElements(driver, this);
     }
     public void NavigateToSignUpPage(){
@@ -47,13 +49,20 @@ public class RegisterPage {
     }
     public void clickContinueButton() {
         wait.until(ExpectedConditions.elementToBeClickable(continueButton));
+        js.executeScript("window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });");
         driver.findElement(continueButton).click();
     }
     public void closeTrustPopup() {
-        Actions actions = new Actions(driver);
-        actions.moveToElement(driver.findElement(By.id("onetrust-banner-sdk"))).perform();
-        wait.until(ExpectedConditions.elementToBeClickable(trustPopup));
-        driver.findElement(trustPopup).click();
+        try {
+            WebElement cookieBanner = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[3]/div[2]/div/div[1]/div")));
+            WebElement acceptCookies = driver.findElement(By.xpath("/html/body/div[3]/div[2]/div/div[2]/button"));
+            if (acceptCookies.isDisplayed()) {
+                acceptCookies.click();
+                wait.until(ExpectedConditions.invisibilityOf(cookieBanner));
+            }
+        } catch (Exception e) {
+           System.out.println("No cookie banner found.");
+        }
     }
     public void personalInformation(String fName, String lName, String zCode) {
 
@@ -61,6 +70,18 @@ public class RegisterPage {
         wait.until(ExpectedConditions.visibilityOfElementLocated(lastName)).sendKeys(lName);
         wait.until(ExpectedConditions.visibilityOfElementLocated(zipCode)).sendKeys(zCode);
 
+        js.executeScript("window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });");
+
+        wait.until(ExpectedConditions.elementToBeClickable(dogDropdownButton));
+        driver.findElement(dogDropdownButton).click();
+        js.executeScript("window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });");
+        WebElement dropdown = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("/html/body/main/div/div/div/div/form/div[2]/div[5]/div[1]/select")
+        ));
+        WebElement option = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[@role='option' and contains(., '2')]") // Adjust based on actual HTML
+        ));
+        option.click();
 
     }
     public void passwordInformation(String pass, String cPass) {
@@ -68,9 +89,15 @@ public class RegisterPage {
         wait.until(ExpectedConditions.visibilityOfElementLocated(confirmPassword)).sendKeys(cPass);
         wait.until(ExpectedConditions.elementToBeClickable(agreeToTerms));
         driver.findElement(agreeToTerms).click();
+
     }
     public void createAccountButton() {
+        js.executeScript("window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });");
         wait.until(ExpectedConditions.elementToBeClickable(submitButton));
         driver.findElement(submitButton).click();
+    }
+    public String verifyRegistration() {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(VerifyRegistration));
+        return driver.findElement(VerifyRegistration).getText();
     }
 }

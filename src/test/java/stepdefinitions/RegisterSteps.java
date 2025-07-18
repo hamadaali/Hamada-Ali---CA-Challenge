@@ -4,6 +4,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.testng.Assert;
 import pages.LoginPage;
 import pages.RegisterPage;
 import utilities.DriverManager;
@@ -38,5 +39,6 @@ public class RegisterSteps {
 
     @Then("I should be receive activation email")
     public void iShouldBeReceiveActivationEmail() {
+        Assert.assertTrue(registerPage.verifyRegistration().contains("Verify your email"));
     }
 }
